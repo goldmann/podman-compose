@@ -536,6 +536,13 @@ def container_to_args(compose, cnt, detached=True, podman_command='run'):
     for i in cnt.get('env_file', []):
         i = os.path.realpath(os.path.join(dirname, i))
         podman_args.extend(['--env-file', i])
+    limits = cnt.get("deploy", {}).get('resources', {}).get('limits', {})
+    cpus = limits.get('cpus', None)
+    if cpus:
+        podman_args.extend(['--cpus', cpus])
+    memory = limits.get('memory', None)
+    if cpus:
+        podman_args.extend(['--memory', memory])    
     tmpfs_ls = cnt.get('tmpfs', [])
     if is_str(tmpfs_ls): tmpfs_ls = [tmpfs_ls]
     for i in tmpfs_ls:
